@@ -1,7 +1,8 @@
 <template>
-    <div>
-        <Contador/>
-    </div>
+  <div>
+    <Contador title="Contador 1" v-bind:inicio="1+0" :mostrar="true"/>
+    <Contador title="Contador 2" :mostrar="false"/>
+  </div>
 </template>
 
 <script>
@@ -15,5 +16,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
