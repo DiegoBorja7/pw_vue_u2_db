@@ -1,7 +1,8 @@
 <template>
-    <div>
-        <Directivas/>
-    </div>
+  <div class="view-container">
+    <h2>Directivas vista</h2>
+    <Directivas />
+  </div>
 </template>
 
 <script>
@@ -14,6 +15,14 @@ export default {
   }
 }</script>
 
-<style>
-
+<style scoped>
+  .view-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  h2 {
+    font-size: xxx-large;
+    color: #1f970a;
+  }
 </style>

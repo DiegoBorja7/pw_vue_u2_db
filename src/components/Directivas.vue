@@ -9,6 +9,13 @@
         <button @click="imprimirNombre">Imprimir Nombre</button>
         <button @click="agregarEstudiante">Agregar Estudiante</button>
 
+        <hr>
+        <label for="id_nombre">Nombre</label>
+        <input id="id_nombre1" type="text">
+        <label for="id_apellido">Apellido</label>
+        <input v-on:keypress.enter="agregarEstudiante1" id="id_apellido1" type="text">
+        <hr>
+
         <ul>
             <li v-for="(estudiante, index) in arreglo" :key="index">
                 {{ estudiante.nombre }} {{ estudiante.apellido }}
@@ -16,7 +23,7 @@
         </ul>
 
         <h3>{{ arreglo.length }}</h3>
-
+        
         <h2>Tabla de los estudiantes</h2>
         <table border="2" cellpadding="5" cellspacing="0">
             <thead>
@@ -61,11 +68,36 @@ export default {
             }
             this.arreglo.push(estudiante);
             console.log("Estudiante agregado:", estudiante);
-            this.limpiarFormulario();
+            this.limpiarFormulario(this.nombre, this.apellido);
             console.log(this.arreglo);
         },
 
-        limpiarFormulario() {
+        agregarEstudiante1(event) {
+            if (event.key === 'Enter') {
+                const nombreInput = document.getElementById('id_nombre1');
+                const apellidoInput = document.getElementById('id_apellido1');
+                const nombre = nombreInput.value.trim();
+                const apellido = apellidoInput.value.trim();
+
+                if (nombre === '' || apellido === '') {
+                    console.log("Nombre o apellido vacíos, no se agrega el estudiante.");
+                    return;
+                }
+
+                const estudiante = {
+                    nombre: nombre,
+                    apellido: apellido
+                };
+
+                this.arreglo.push(estudiante);
+                console.log("Estudiante agregado:", estudiante);
+
+                // Limpiar los campos de entrada
+                this.limpiarFormulario(nombreInput, apellidoInput);
+            }
+        },
+
+        limpiarFormulario(nombre, apellido) {
             this.nombre = '';
             this.apellido = '';
         }
@@ -74,4 +106,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+    
+</style>
