@@ -27,6 +27,7 @@ export default {
             imagen: ''
         }
     },
+
     watch: { //son observadores de propiedades reactivas
         pregunta(value) {
             if (value.includes('?')) {
