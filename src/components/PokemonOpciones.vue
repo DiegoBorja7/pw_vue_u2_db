@@ -2,25 +2,25 @@
     <div class="pokemon-opciones">
         <h1>Opciones</h1>
         <ul>
-            <li>Pikachu</li>
-            <li>Bulbasaur</li>
-            <li>Charmander</li>
-            <li>Squirtle</li>
+            <li v-on:click="pasarPadre(pokemon.id)" v-for="pokemon in listaPokemons" :key="pokemon.id">{{ pokemon.nombre
+                }}</li>
         </ul>
     </div>
 </template>
 <script>
-import ConsumirAPIPokemon from '../clients/PokemonClient.js';
 
 export default {
     name: 'PokemonOpciones',
-    data() {
-        return {
-            opciones: []
+    props: {
+        listaPokemons: {
+            type: Array,
+            required: true
         }
     },
-    async created() {
-        this.opciones = await ConsumirAPIPokemon();
+    methods: {
+        pasarPadre(id) {
+            this.$emit('seleccionar-pokemon', id);
+        }
     }
 }
 </script>

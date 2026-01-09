@@ -1,19 +1,82 @@
 <template>
     <div class="pokemon-view">
-        <PokemonImagen :PokemonId="26" />
-        <PokemonOpciones />
+        <PokemonImagen v-if="pokemonGanador" :PokemonId="pokemonGanador.id" />
+        <div v-else class="loading">Cargando Pokémon...</div>
+
+        <!-- Mensaje de resultado -->
+        <div v-if="mensajeResultado.mostrar" :class="['mensaje-resultado', mensajeResultado.tipo]">
+            <div class="mensaje-icono">
+                <span v-if="mensajeResultado.tipo === 'ganador'">🎉</span>
+                <span v-else>😞</span>
+            </div>
+            <h2>{{ mensajeResultado.titulo }}</h2>
+            <p>{{ mensajeResultado.mensaje }}</p>
+            <button @click="reiniciarJuego" class="btn-reiniciar">Jugar de Nuevo</button>
+        </div>
+
+        <PokemonOpciones v-if="!mensajeResultado.mostrar" @seleccionar-pokemon="evaluarGanador($event)"
+            :listaPokemons="listaPokemones" />
     </div>
 </template>
 
 <script>
 import PokemonImagen from '../components/PokemonImagen.vue';
 import PokemonOpciones from '../components/PokemonOpciones.vue';
+import ConsumirVectorPokemonAPIFacade, { obtenerAleatorioFachada } from '../clients/PokemonClient.js';
 
 export default {
     name: 'PokemonView',
     components: {
         PokemonImagen,
         PokemonOpciones
+    },
+    data() {
+        return {
+            listaPokemones: [],
+            pokemonGanador: null,
+            mensajeResultado: {
+                mostrar: false,
+                tipo: '', // 'ganador' o 'perdedor'
+                titulo: '',
+                mensaje: ''
+            }
+        }
+    },
+    mounted() {
+        // Ejemplo de uso de la función para consumir la API y obtener un vector de pokemones
+        this.iniciarJuego();
+    },
+    methods: {
+        async iniciarJuego() {
+            this.listaPokemones = await ConsumirVectorPokemonAPIFacade();
+
+            const idAleatorio = obtenerAleatorioFachada(0, this.listaPokemones.length - 1);
+            this.pokemonGanador = this.listaPokemones[idAleatorio];
+        },
+
+        evaluarGanador(idGanador) {
+            console.log('Pokemon seleccionado:', idGanador);
+            if (idGanador === this.pokemonGanador.id) {
+                this.mensajeResultado = {
+                    mostrar: true,
+                    tipo: 'ganador',
+                    titulo: '¡Has Ganado!',
+                    mensaje: `¡Felicitaciones! Has adivinado correctamente.`
+                };
+            } else {
+                this.mensajeResultado = {
+                    mostrar: true,
+                    tipo: 'perdedor',
+                    titulo: '¡Has Perdido!',
+                    mensaje: `El Pokémon ganador era ${this.pokemonGanador.nombre}. ¡Inténtalo de nuevo!`
+                };
+            }
+        },
+
+        reiniciarJuego() {
+            this.mensajeResultado.mostrar = false;
+            this.iniciarJuego();
+        }
     }
 }
 </script>
@@ -30,6 +93,85 @@ export default {
     border-radius: 32px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(253, 230, 138, 0.8));
     box-shadow: 0 30px 60px rgba(15, 23, 42, 0.2);
+}
+
+.loading {
+    font-size: 1.2rem;
+    color: #6b7280;
+    font-weight: 500;
+    padding: 2rem;
+    text-align: center;
+}
+
+.mensaje-resultado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    animation: aparecer 0.5s ease-out;
+}
+
+.mensaje-resultado.ganador {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.mensaje-resultado.perdedor {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.mensaje-icono {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.mensaje-resultado h2 {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    font-weight: 700;
+}
+
+.mensaje-resultado p {
+    font-size: 1.1rem;
+    margin: 1rem 0;
+    opacity: 0.9;
+}
+
+.btn-reiniciar {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.btn-reiniciar:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 @media (max-width: 640px) {
