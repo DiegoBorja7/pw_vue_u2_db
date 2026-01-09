@@ -16,6 +16,7 @@
 
         <PokemonOpciones v-if="!mensajeResultado.mostrar" @seleccionar-pokemon="evaluarGanador($event)"
             :listaPokemons="listaPokemones" />
+        <button @click="destruirComponente">destruir</button>
     </div>
 </template>
 
@@ -39,12 +40,44 @@ export default {
                 tipo: '', // 'ganador' o 'perdedor'
                 titulo: '',
                 mensaje: ''
-            }
+            },
+            mostrarComponente: true
         }
     },
+
+    // CICLO DE VIDA DEL COMPONENTE
+    //Cuando se crea el componente
+    beforeCreate() {
+        console.log('Antes de crear el componente PokemonView');
+    },
+    created() {
+        console.log('Componente PokemonView creado');
+        console.log('Create: cuando ya se resolvio el data, computed, watch y methods');
+    },
+    //Monta el componente en el DOM, renderiza la vista
+    beforeMount() {
+        console.log('Antes de montar el componente PokemonView');
+    },
     mounted() {
-        // Ejemplo de uso de la función para consumir la API y obtener un vector de pokemones
+        console.log('Componente PokemonView montado o renderizado en el DOM');
         this.iniciarJuego();
+    },
+    //Actualizacion del componente
+    beforeUpdate() {
+        console.log('Antes de actualizar el componente PokemonView');
+        console.log('BeforeUpdate: cuando hay un cambio en data, computed o props');
+    },
+    updated() {
+        console.log('Componente PokemonView actualizado');
+        console.log('Updated: despues de que se actualizo la vista');
+    },
+    //Eliminacion del componente
+    beforeDestroy() {
+        console.log('Antes de eliminar el componente PokemonView');
+    },
+    destroyed() {
+        console.log('Componente PokemonView eliminado');
+
     },
     methods: {
         async iniciarJuego() {
@@ -76,6 +109,10 @@ export default {
         reiniciarJuego() {
             this.mensajeResultado.mostrar = false;
             this.iniciarJuego();
+        },
+
+        destruirComponente() {
+            this.mostrarComponente = false;
         }
     }
 }

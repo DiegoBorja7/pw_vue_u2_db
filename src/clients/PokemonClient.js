@@ -21,7 +21,7 @@ function obtenerNumeroAleatorio(min, max) {
 const obtenerVectorNumerico = () => {
   const vectorNumerico = [];
   for (let i = 0; i < 4; i++) {
-    vectorNumerico.push(obtenerNumeroAleatorio(1, 500));
+    vectorNumerico.push(obtenerNumeroAleatorio(1, 777));
   }
   return vectorNumerico;
 };
